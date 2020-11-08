@@ -7,7 +7,8 @@
   * @brief   Default main function.
   ******************************************************************************
 */
-
+#include <stdio.h>
+#include <stdint.h>
 
 #include "stm32f4xx.h"
 
@@ -22,8 +23,13 @@ TaskHandle_t xTaskHandle2=NULL;
 void vTask1_handler(void *params);
 void vTask2_handler(void *params);
 
+// Used for semihosting
+extern void initialise_monitor_handles();
+
 int main(void)
 {
+	initialise_monitor_handles();
+	printf("Hello workd example code!");
 	// 1. Reset the RCC clock configuration to the default reset state.
 	RCC_DeInit(); // Makes: HSI ON, PLL OFF, HSE OFF, System Clock = 16MHz, cpu clock = 16MHz
 	// 2. Update the System Core Clock variable
@@ -43,16 +49,25 @@ int main(void)
 			NULL,
 			2,
 			&xTaskHandle2 );
+	// 4. Start the Scheduler
+	vTaskStartScheduler();
 
+	// Will never return here
 	for(;;);
 }
 
 void vTask1_handler(void *params)
 {
-	while(1); // should never return
+	while(1)
+	{
+		printf("Hello-World: From Task-1\n");
+	}
 }
 
 void vTask2_handler(void *params)
 {
-	while(1);
+	while(1)
+	{
+		printf("Hello-World: From Task-2\n");
+	}
 }
